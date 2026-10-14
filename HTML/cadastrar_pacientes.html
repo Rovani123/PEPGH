@@ -14,9 +14,7 @@
 <body>
     <div class="card">
         <h2>Cadastrar Paciente</h2>
-        {% with msgs = get_flashed_messages(category_filter=["erro_paciente"]) %}
-            {% if msgs %}<p class="erro">{{ msgs[0] }}</p>{% endif %}
-        {% endwith %}
+            <p class="erro"></p>
         <form action="/cadastrar_paciente" method="POST">
             <input type="text" name="nome" placeholder="Nome Completo" required>
             <input type="number" name="cpf" placeholder="CPF (Apenas 11 números)" required>
