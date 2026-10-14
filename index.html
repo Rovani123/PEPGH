@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Conexão MongoDB</title>
+</head>
+<body>
+    <h2>Enviar Dados para o MongoDB</h2>
+    <!-- O action aponta para a rota do seu servidor back-end -->
+    <form action="http://localhost:3000/enviar" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br><br>
+        
+        <button type="submit">Salvar no Banco</button>
+    </form>
+</body>
+</html>
