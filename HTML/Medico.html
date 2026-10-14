@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Médico - PEPGH</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f8f9fa; }
+        input, button { padding: 8px; margin-right: 5px; }
+        button { background: #182238; color: white; border: none; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #00d285; }
+        .btn-del { background: #ef4444; }
+        .btn-edit { background: #f59e0b; }
+        .logout { color: #ef4444; font-weight: bold; text-decoration: none; }
+        .sucesso { color: #047857; font-weight: bold; }
+        .erro { color: #b91c1c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h2>{{ nome }}</h2>
+            <small>CRM: {{ crm }}</small>
+        </div>
+        <a href="/logout" class="logout">Sair do Sistema</a>
+    </header>
+
+    <!-- Form de Cadastro de Exame pelo Médico -->
+    <div class="box">
+        <h3>Solicitar Novo Exame</h3>
+        {% with msgs = get_flashed_messages(category_filter=["sucesso_exame"]) %}
+            {% if msgs %}<p class="sucesso">{{ msgs[0] }}</p>{% endif %}
+        {% endwith %}
+        {% with msgs = get_flashed_messages(category_filter=["erro_exame"]) %}
+            {% if msgs %}<p class="erro">{{ msgs[0] }}</p>{% endif %}
+        {% endwith %}
+
+        <form action="/cadastrar_exame" method="POST">
+            <input type="number" name="cpf_paciente" placeholder="CPF do Paciente (11 números)" required>
+            <input type="text" name="tipo" placeholder="Tipo do Exame (ex: Hemograma)" required>
+            <input type="date" name="dataSolicitacao" required>
+            <button type="submit">Cadastrar Exame</button>
+        </form>
+    </div>
+
+    <!-- Minhas Consultas (Médico pode MODIFICAR A DATA) -->
+    <div class="box">
+        <h3>Minhas Consultas Agendadas</h3>
+        {% with msgs = get_flashed_messages(category_filter=["sucesso_consulta_medico"]) %}
+            {% if msgs %}<p class="sucesso">{{ msgs[0] }}</p>{% endif %}
+        {% endwith %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>CPF</th>
+                    <th>Data da Consulta</th>
+                    <th>Motivo</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in consultas %}
+                <tr>
+                    <td><b>{{ c.NomePaciente }}</b></td>
+                    <td>{{ c.CPFPaciente }}</td>
+                    <td>
+                        <form action="/editar_consulta_medico/{{ c.id }}" method="POST" style="display:inline-flex;">
+                            <input type="date" name="dataConsulta" value="{{ c.dataConsulta }}" required>
+                    </td>
+                    <td>{{ c.Motivo }}</td>
+                    <td>
+                            <button type="submit" class="btn-edit">Alterar Data</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">Nenhuma consulta agendada para o seu CRM.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Exames Solicitados pelo Médico (Pode MODIFICAR O TIPO e EXCLUIR) -->
+    <div class="box">
+        <h3>Exames Solicitados por Mim</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>CPF</th>
+                    <th>Tipo de Exame</th>
+                    <th>Data Solicitação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in exames %}
+                <tr>
+                    <td><b>{{ e.NomePaciente }}</b></td>
+                    <td>{{ e.CPF }}</td>
+                    <td>
+                        <form action="/editar_exame_medico/{{ e.id }}" method="POST" style="display:inline-flex;">
+                            <input type="text" name="Tipo" value="{{ e.Tipo }}" required>
+                    </td>
+                    <td>{{ e.dataSolicitacao }}</td>
+                    <td>
+                            <button type="submit" class="btn-edit">Alterar Exame</button>
+                        </form>
+
+                        <form action="/excluir_exame_medico/{{ e.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-del" onclick="return confirm('Excluir este exame?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">Nenhum exame solicitado até o momento.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

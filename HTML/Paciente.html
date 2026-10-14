@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Espaço do Paciente</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f8f9fa; }
+        input, button { padding: 8px; margin-right: 5px; }
+        button { background: #00d285; color: white; border: none; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .btn-del { background: #ef4444; }
+        .btn-edit { background: #f59e0b; }
+        .btn-toggle { background: #0284c7; margin-top: 10px; }
+        .linha-oculta { display: none; }
+    </style>
+</head>
+<body>
+    <a href="/">← Voltar ao Início</a>
+    <h1>Espaço do Paciente</h1>
+
+    <!-- Busca por CPF -->
+    <div class="box">
+        <form action="/paciente" method="GET">
+            <input type="number" name="cpf_busca" placeholder="Filtrar por CPF" value="{{ cpf_busca }}">
+            <button type="submit">Filtrar</button>
+            <a href="/paciente">Limpar Filtro</a>
+        </form>
+    </div>
+
+    <!-- Tabela de Pacientes Cadastrados (limite visível = 3) -->
+    <div class="box">
+        <h3>Pacientes Cadastrados</h3>
+        <table>
+            <thead>
+                <tr><th>Nome</th><th>CPF</th><th>Data de Nascimento</th><th>Histórico Familiar</th></tr>
+            </thead>
+            <tbody>
+                {% for p in pacientes %}
+                <tr class="{% if loop.index > 3 %}linha-oculta item-paciente-extra{% endif %}">
+                    <td><b>{{ p.Nome }}</b></td>
+                    <td>{{ p.CPF }}</td>
+                    <td>{{ p.DataNascimento }}</td>
+                    <td>{{ p.historicoFamiliar | join(', ') if p.historicoFamiliar else 'Nenhum' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">Nenhum paciente cadastrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if pacientes|length > 3 %}
+            <button id="btnTogglePacientes" class="btn-toggle" onclick="togglePacientes()">Ver mais pacientes (+{{ pacientes|length - 3 }})</button>
+        {% endif %}
+    </div>
+
+    <!-- Agendamento -->
+    <div class="box">
+        <h3>Agendar Nova Consulta</h3>
+        {% with msgs = get_flashed_messages(category_filter=["erro_consulta"]) %}
+            {% if msgs %}<p style="color:red;">{{ msgs[0] }}</p>{% endif %}
+        {% endwith %}
+        <form action="/cadastrar_consulta" method="POST">
+            <input type="number" name="cpf_paciente" placeholder="Seu CPF" value="{{ cpf_busca }}" required>
+            <input type="number" name="crm_medico" placeholder="CRM do Médico" required>
+            <input type="date" name="data" required>
+            <input type="text" name="motivo" placeholder="Motivo da Consulta" required>
+            <button type="submit">Agendar</button>
+        </form>
+    </div>
+
+    <!-- Tabela de Consultas -->
+    <div class="box">
+        <h3>Consultas Agendadas</h3>
+        <table>
+            <tr><th>CPF Paciente</th><th>Nome do Médico</th><th>Data</th><th>Motivo</th><th>Ações</th></tr>
+            {% for c in consultas %}
+            <tr>
+                <td>{{ c.CPFPaciente }}</td>
+                <td><b>{{ c.NomeMedico }}</b></td>
+                <td>
+                    <form action="/editar_consulta/{{ c.id }}" method="POST" style="display:inline-flex;">
+                        <input type="date" name="dataConsulta" value="{{ c.dataConsulta }}" required>
+                </td>
+                <td>
+                        <input type="text" name="Motivo" value="{{ c.Motivo }}" required>
+                </td>
+                <td>
+                        <button type="submit" class="btn-edit">Alterar</button>
+                    </form>
+
+                    <form action="/excluir_consulta/{{ c.id }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-del" onclick="return confirm('Excluir consulta?')">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">Nenhuma consulta encontrada.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Tabela de Exames (Apenas Leitura/Visualização para o Paciente) -->
+    <div class="box">
+        <h3>Exames Solicitados</h3>
+        <table>
+            <tr><th>CPF Paciente</th><th>Exame</th><th>Médico Solicitante</th><th>Data Solicitação</th></tr>
+            {% for e in exames %}
+            <tr>
+                <td>{{ e.CPF }}</td>
+                <td><b>{{ e.Tipo }}</b></td>
+                <td><b>{{ e.NomeMedico }}</b></td>
+                <td>{{ e.dataSolicitacao }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">Nenhum exame encontrado.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script>
+        function togglePacientes() {
+            const extras = document.querySelectorAll('.item-paciente-extra');
+            const btn = document.getElementById('btnTogglePacientes');
+            let oculto = false;
+
+            extras.forEach(el => {
+                if (el.style.display === 'table-row') {
+                    el.style.display = 'none';
+                    oculto = true;
+                } else {
+                    el.style.display = 'table-row';
+                }
+            });
+
+            if (oculto) {
+                btn.innerText = "Ver mais pacientes (+{{ pacientes|length - 3 }})";
+            } else {
+                btn.innerText = "Ver menos pacientes";
+            }
+        }
+    </script>
+</body>
+</html>
