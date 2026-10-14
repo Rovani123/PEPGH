@@ -38,30 +38,29 @@
                 <tr><th>Nome</th><th>CPF</th><th>Data de Nascimento</th><th>Histórico Familiar</th></tr>
             </thead>
             <tbody>
-                {% for p in pacientes %}
+                
                 <tr class="{% if loop.index > 3 %}linha-oculta item-paciente-extra{% endif %}">
-                    <td><b>{{ p.Nome }}</b></td>
-                    <td>{{ p.CPF }}</td>
-                    <td>{{ p.DataNascimento }}</td>
-                    <td>{{ p.historicoFamiliar | join(', ') if p.historicoFamiliar else 'Nenhum' }}</td>
+                    <td><b> p.Nome </b></td>
+                    <td>p.CPF </td>
+                    <td>p.DataNascimento </td>
+                    <td>p.historicoFamiliar | join(', ') if p.historicoFamiliar else 'Nenhum' </td>
                 </tr>
-                {% else %}
+              
                 <tr><td colspan="4">Nenhum paciente cadastrado.</td></tr>
-                {% endfor %}
+             
             </tbody>
         </table>
 
-        {% if pacientes|length > 3 %}
-            <button id="btnTogglePacientes" class="btn-toggle" onclick="togglePacientes()">Ver mais pacientes (+{{ pacientes|length - 3 }})</button>
-        {% endif %}
+      
+            <button id="btnTogglePacientes" class="btn-toggle" onclick="togglePacientes()">Ver mais pacientes </button>
+ 
     </div>
 
     <!-- Agendamento -->
     <div class="box">
         <h3>Agendar Nova Consulta</h3>
-        {% with msgs = get_flashed_messages(category_filter=["erro_consulta"]) %}
-            {% if msgs %}<p style="color:red;">{{ msgs[0] }}</p>{% endif %}
-        {% endwith %}
+       
+           <p style="color:red;"> msgs[0] </p>
         <form action="/cadastrar_consulta" method="POST">
             <input type="number" name="cpf_paciente" placeholder="Seu CPF" value="{{ cpf_busca }}" required>
             <input type="number" name="crm_medico" placeholder="CRM do Médico" required>
@@ -76,10 +75,10 @@
         <h3>Consultas Agendadas</h3>
         <table>
             <tr><th>CPF Paciente</th><th>Nome do Médico</th><th>Data</th><th>Motivo</th><th>Ações</th></tr>
-            {% for c in consultas %}
+          
             <tr>
-                <td>{{ c.CPFPaciente }}</td>
-                <td><b>{{ c.NomeMedico }}</b></td>
+                <td> c.CPFPaciente </td>
+                <td><b> c.NomeMedico </b></td>
                 <td>
                     <form action="/editar_consulta/{{ c.id }}" method="POST" style="display:inline-flex;">
                         <input type="date" name="dataConsulta" value="{{ c.dataConsulta }}" required>
@@ -96,9 +95,9 @@
                     </form>
                 </td>
             </tr>
-            {% else %}
+     
             <tr><td colspan="5">Nenhuma consulta encontrada.</td></tr>
-            {% endfor %}
+
         </table>
     </div>
 
@@ -107,16 +106,16 @@
         <h3>Exames Solicitados</h3>
         <table>
             <tr><th>CPF Paciente</th><th>Exame</th><th>Médico Solicitante</th><th>Data Solicitação</th></tr>
-            {% for e in exames %}
+          
             <tr>
                 <td>{{ e.CPF }}</td>
                 <td><b>{{ e.Tipo }}</b></td>
                 <td><b>{{ e.NomeMedico }}</b></td>
                 <td>{{ e.dataSolicitacao }}</td>
             </tr>
-            {% else %}
+         
             <tr><td colspan="4">Nenhum exame encontrado.</td></tr>
-            {% endfor %}
+           
         </table>
     </div>
 

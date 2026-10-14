@@ -23,8 +23,8 @@
 <body>
     <header>
         <div>
-            <h2>{{ nome }}</h2>
-            <small>CRM: {{ crm }}</small>
+            <h2>nome</h2>
+            <small>CRM: crm </small>
         </div>
         <a href="/logout" class="logout">Sair do Sistema</a>
     </header>
@@ -32,12 +32,10 @@
     <!-- Form de Cadastro de Exame pelo Médico -->
     <div class="box">
         <h3>Solicitar Novo Exame</h3>
-        {% with msgs = get_flashed_messages(category_filter=["sucesso_exame"]) %}
-            {% if msgs %}<p class="sucesso">{{ msgs[0] }}</p>{% endif %}
-        {% endwith %}
-        {% with msgs = get_flashed_messages(category_filter=["erro_exame"]) %}
-            {% if msgs %}<p class="erro">{{ msgs[0] }}</p>{% endif %}
-        {% endwith %}
+        <p class="sucesso"> Novo </p>
+      
+        <p class="erro">Erro</p>
+ 
 
         <form action="/cadastrar_exame" method="POST">
             <input type="number" name="cpf_paciente" placeholder="CPF do Paciente (11 números)" required>
@@ -50,9 +48,7 @@
     <!-- Minhas Consultas (Médico pode MODIFICAR A DATA) -->
     <div class="box">
         <h3>Minhas Consultas Agendadas</h3>
-        {% with msgs = get_flashed_messages(category_filter=["sucesso_consulta_medico"]) %}
-            {% if msgs %}<p class="sucesso">{{ msgs[0] }}</p>{% endif %}
-        {% endwith %}
+        <p class="sucesso">msgs[0] </p>
         <table>
             <thead>
                 <tr>
@@ -64,23 +60,23 @@
                 </tr>
             </thead>
             <tbody>
-                {% for c in consultas %}
+             
                 <tr>
-                    <td><b>{{ c.NomePaciente }}</b></td>
-                    <td>{{ c.CPFPaciente }}</td>
+                    <td><b>c.NomePaciente </b></td>
+                    <td>c.CPFPaciente </td>
                     <td>
                         <form action="/editar_consulta_medico/{{ c.id }}" method="POST" style="display:inline-flex;">
                             <input type="date" name="dataConsulta" value="{{ c.dataConsulta }}" required>
                     </td>
-                    <td>{{ c.Motivo }}</td>
+                    <td>c.Motivo </td>
                     <td>
                             <button type="submit" class="btn-edit">Alterar Data</button>
                         </form>
                     </td>
                 </tr>
-                {% else %}
+             
                 <tr><td colspan="5">Nenhuma consulta agendada para o seu CRM.</td></tr>
-                {% endfor %}
+                
             </tbody>
         </table>
     </div>
@@ -99,15 +95,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for e in exames %}
                 <tr>
-                    <td><b>{{ e.NomePaciente }}</b></td>
-                    <td>{{ e.CPF }}</td>
+                    <td><b>e.NomePaciente </b></td>
+                    <td> e.CPF </td>
                     <td>
                         <form action="/editar_exame_medico/{{ e.id }}" method="POST" style="display:inline-flex;">
                             <input type="text" name="Tipo" value="{{ e.Tipo }}" required>
                     </td>
-                    <td>{{ e.dataSolicitacao }}</td>
+                    <td>e.dataSolicitacao </td>
                     <td>
                             <button type="submit" class="btn-edit">Alterar Exame</button>
                         </form>
@@ -116,10 +111,8 @@
                             <button type="submit" class="btn-del" onclick="return confirm('Excluir este exame?')">Excluir</button>
                         </form>
                     </td>
-                </tr>
-                {% else %}
+                </tr>            
                 <tr><td colspan="5">Nenhum exame solicitado até o momento.</td></tr>
-                {% endfor %}
             </tbody>
         </table>
     </div>

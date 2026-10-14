@@ -2,50 +2,197 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal PEPGH</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .grid { display: flex; gap: 20px; }
-        .card { background: white; padding: 25px; border-radius: 10px; width: 260px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .btn { display: block; width: 100%; padding: 10px; text-align: center; background: #00d285; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; box-sizing: border-box; border: none; cursor: pointer; }
-        .btn-medico { background: #182238; }
-        .btn-secundario { background: #64748b; font-size: 0.85rem; padding: 8px; margin-top: 10px; }
-        input { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
-        .erro { color: red; font-size: 0.85rem; margin-top: 5px; }
-        .sucesso { color: #047857; font-size: 0.85rem; margin-top: 5px; font-weight: bold; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #0f172a; /* Azul noturno escuro */
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .grid {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .card {
+            background: #1e293b; /* Tom escuro secundário */
+            padding: 28px;
+            border-radius: 12px;
+            width: 280px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #475569;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 11px;
+            text-align: center;
+            background-color: #059669; /* Verde esmeralda escuro */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #10b981;
+        }
+
+        .btn-medico {
+            background-color: #2563eb; /* Azul para ação do médico */
+        }
+
+        .btn-medico:hover {
+            background-color: #3b82f6;
+        }
+
+        .btn-secundario {
+            background-color: transparent;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            font-size: 0.85rem;
+            padding: 9px;
+            margin-top: 12px;
+        }
+
+        .btn-secundario:hover {
+            background-color: #334155;
+            color: #f8fafc;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f8fafc;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        .erro {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+
+        .sucesso {
+            color: #34d399;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        hr {
+            margin: 16px 0;
+            border: 0;
+            border-top: 1px solid #334155;
+        }
     </style>
 </head>
 <body>
+
     <div class="grid">
+        <!-- Card 1: Novo Paciente -->
         <div class="card">
-            <h3>Novo Paciente</h3>
-            <p>Cadastre um paciente no sistema.</p>
+            <div>
+                <h3>Novo Paciente</h3>
+                <p>Cadastre um paciente no sistema.</p>
+            </div>
             <a href="/novo_paciente" class="btn">Cadastrar Paciente</a>
         </div>
+
+        <!-- Card 2: Área Paciente -->
         <div class="card">
-            <h3>Área Paciente</h3>
-            <p>Consulte históricos e agende consultas.</p>
+            <div>
+                <h3>Área Paciente</h3>
+                <p>Consulte históricos e agende consultas.</p>
+            </div>
             <a href="/paciente" class="btn">Acessar Portal</a>
         </div>
+
+        <!-- Card 3: Área Médico -->
         <div class="card">
-            <h3>Área Médico</h3>
+            <div>
+                <h3>Área Médico</h3>
                 <p class="sucesso"></p>
-            <form action="/login_medico" method="POST">
-                <input type="number" name="crm" placeholder="Digite seu CRM" required>
-                <button type="submit" class="btn btn-medico" id="BtEntrar">Entrar</button>
-                <p class="erro"></p>
-            </form>
-            <hr style="margin-top: 15px; border: 0; border-top: 1px solid #eee;">
-            <a href="/novo_medico" class="btn btn-secundario">Cadastrar Novo Médico</a>
+                <form action="/login_medico" method="POST">
+                    <input type="number" name="crm" placeholder="Digite seu CRM" required>
+                    <button type="submit" class="btn btn-medico" id="BtEntrar">Entrar</button>
+                    <p class="erro"></p>
+                </form>
+            </div>
+            <div>
+                <hr>
+                <a href="/novo_medico" class="btn btn-secundario">Cadastrar Novo Médico</a>
+            </div>
         </div>
     </div>
 
     <script>
         const botao = document.getElementById("BtEntrar");
 
-        botao.addEventListener("click", function() {
+        botao.addEventListener("click", function(e) {
+            // Nota: Se você for usar envio de formulário tradicional com POST, 
+            // a linha abaixo fará um redirecionamento simples via cliente.
             window.location.href = "Medico.html";
-});
+        });
     </script>
 </body>
 </html>
