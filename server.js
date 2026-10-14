@@ -11,8 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const url = 'mongodb://localhost:27017'; 
 const client = new MongoClient(url);
 
-// Nome do banco de dados e da coleção que você quer usar
-const dbName = 'meuBancoDeDados';
+const dbName = 'PEPGH';
 
 async function conectarBanco() {
     try {
